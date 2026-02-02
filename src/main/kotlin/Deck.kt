@@ -41,7 +41,7 @@ class Deck(initialCardOrdering: String) {
 
         var totalString: String = ""
 
-        while(count<=n){
+        while(count<n){
             totalString += tempo!!.value.toString() + " "
             tempo = tempo!!.next
             count++
@@ -56,7 +56,7 @@ class Deck(initialCardOrdering: String) {
 
         var totalString: String = ""
 
-        while(count<=n){
+        while(count<n){
             totalString += tempo!!.value.toString() + " "
             tempo = tempo!!.previous
             count++
