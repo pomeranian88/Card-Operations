@@ -86,7 +86,6 @@ class Deck(initialCardOrdering: String) {
         var behindJoker: Node? = tempo!!.previous
         var aheadOfJoker: Node? = tempo!!.next       
         var aheadTwoOfJoker: Node? = aheadOfJoker!!.next // now: we have variables for nodes behind, at, ahead of, and two ahead of joker
-        println("the four: ${behindJoker!!.value} ${tempo!!.value} ${aheadOfJoker!!.value} ${aheadTwoOfJoker!!.value}")
 
         if(aheadOfJoker==cards){cards = tempo}                      // special case: if the joker is moving to front position, set front pos var "cards" = to jokers
         else if(aheadOfJoker==cards!!.next){cards = aheadOfJoker}   // special case: if the joker is moving to second position, set front pos var "cards" = to spot that is being swapped to
@@ -113,9 +112,10 @@ class Deck(initialCardOrdering: String) {
         val aheadTwoOfJoker: Node? = aheadOfJoker!!.next       // note: this variable is only used as a stepping stone to define three ahead of the joker
         val aheadThreeOfJoker: Node? = aheadTwoOfJoker!!.next  // now: we have variables for nodes behind, at, ahead of, two, and three ahead of the joker
 
-        if(aheadOfJoker==cards){cards = tempo}                      // special case: if the joker is moving to front position, set front pos var "cards" = to jokers
+        if(aheadTwoOfJoker==cards){cards = tempo}                      // special case: if the joker is moving to front position, set front pos var "cards" = to jokers
         else if(aheadOfJoker==cards!!.next){cards = aheadOfJoker}   // special case: if the joker is moving to second position, set front pos var "cards" = to spot that is being swapped to
 
+                                                    // -- BEGIN SWAPPAGE --
         behindJoker!!.next = aheadOfJoker           // swap links behind & in front of joker to make them consecutive
         aheadOfJoker!!.previous = behindJoker
 
