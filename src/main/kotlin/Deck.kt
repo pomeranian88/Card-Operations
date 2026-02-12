@@ -150,18 +150,3 @@ class Deck(initialCardOrdering: String) {
         cards = head2
     }
 }
-
-
-
-// // going to call node behind joker -1, node of joker 0, node ahead of joker 1, and node ahead of that 2
-        // behindJoker!!.next = aheadOfJoker       // swap -1.next=0 to be -1.next=1
-        // tempo!!.next = aheadOfJoker!!.next      // swap 0.next=1 to be 0.next=2
-        // aheadOfJoker!!.next = tempo             // swap 1.next=2 to be 1.next=0
-        // // now, the order changed from {-1,0,1,2} to {-1,1,0,2}. 0, the joker, has been moved one up
-
-// // going to call node behind joker -1, node of joker 0, node ahead of joker 1, node ahead of that 2, and node ahead of that 3
-        // behindJoker!!.next = aheadOfJoker         // swap -1.next=0 to be -1.next = 1
-        // aheadOfJoker!!.next = aheadAheadOfJoker   // swap 1.next=2 to be 1.next = 2
-        // tempo!!.next = aheadAheadOfJoker!!.next   // swap 0.next=1 to be 0.next = 3
-        // aheadAheadOfJoker!!.next = tempo          // swap 2.next=3 to be 2.next = 0
-        // // now, the order changed from {-1,0,1,2,3} to {-1,1,2,0,3}. 0, the joker, has been moved two up
