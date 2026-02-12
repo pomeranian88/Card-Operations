@@ -12,8 +12,18 @@
  */
 
 fun main() {
-    val deck = Deck("5 6 27 1 2 3 4 28")
-    println(deck.getString(8))
-    deck.tripleCut()
-    println(deck.getString(8))
+    val deck = Deck("28 1 2 3 4")
+    println(deck.getString(5))
+    deck.swapJokerB()
+    println(deck.getString(5))
+    deck.swapJokerB()
+    println(deck.getString(5))
+    deck.swapJokerB()
+    println(deck.getString(5))
+    deck.swapJokerB()
+    println(deck.getString(5))
+    deck.swapJokerB()
+    println(deck.getString(5))
+    deck.swapJokerB()
+    println(deck.getString(5))
 }

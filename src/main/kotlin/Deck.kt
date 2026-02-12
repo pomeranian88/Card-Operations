@@ -87,8 +87,8 @@ class Deck(initialCardOrdering: String) {
         var aheadOfJoker: Node? = tempo!!.next       
         var aheadTwoOfJoker: Node? = aheadOfJoker!!.next // now: we have variables for nodes behind, at, ahead of, and two ahead of joker
 
-        if(aheadOfJoker==cards){cards = tempo}                      // special case: if the joker is moving to front position, set front pos var "cards" = to jokers
-        else if(aheadOfJoker==cards!!.next){cards = aheadOfJoker}   // special case: if the joker is moving to second position, set front pos var "cards" = to spot that is being swapped to
+        if(aheadOfJoker==cards){cards = tempo}                      // special case 1: if the joker is moving to front position, set front pos var "cards" = to jokers
+        else if(aheadOfJoker==cards!!.next){cards = aheadOfJoker}   // special case 2: if the joker is moving to second position, set front pos var "cards" = to spot that is being swapped to
 
                                                 // -- BEGIN SWAPPAGE --
         behindJoker!!.next = aheadOfJoker       // swap links behind & in front of joker to make them consecutive
@@ -112,8 +112,9 @@ class Deck(initialCardOrdering: String) {
         val aheadTwoOfJoker: Node? = aheadOfJoker!!.next       // note: this variable is only used as a stepping stone to define three ahead of the joker
         val aheadThreeOfJoker: Node? = aheadTwoOfJoker!!.next  // now: we have variables for nodes behind, at, ahead of, two, and three ahead of the joker
 
-        if(aheadTwoOfJoker==cards){cards = tempo}                      // special case: if the joker is moving to front position, set front pos var "cards" = to jokers
-        else if(aheadOfJoker==cards!!.next){cards = aheadOfJoker}   // special case: if the joker is moving to second position, set front pos var "cards" = to spot that is being swapped to
+        if(aheadTwoOfJoker==cards){cards = tempo}                      // special case 1: if the joker is moving to front position, set front pos var "cards" = to jokers
+        else if(aheadTwoOfJoker==cards!!.next){cards = cards!!.next}   // special case 2: if the joker is moving to second position, set front pos var "cards" = to cards.next, which will be pushed back
+        else if(tempo==cards){cards = cards!!.next}                    // special case 3: if the joker is moving to third position/is "cards", set front pos var "cards" = cards.next, which will be pushed back
 
                                                     // -- BEGIN SWAPPAGE --
         behindJoker!!.next = aheadOfJoker           // swap links behind & in front of joker to make them consecutive
@@ -145,13 +146,13 @@ class Deck(initialCardOrdering: String) {
         val tail2: Node? = cards!!.previous
         // now: we have variables of the head and tail of each three section
 
-        if(cards==jokers[0]){   // special case 1: if group 1 is empty/joker is the head, just set the beginning of group 2 as the head
+        if(cards==jokers[0]){                   // special case 1: if group 1 is empty/joker is the head, just set the beginning of group 2 as the head
             cards = head2
         }
         else if(head1!!.previous==jokers[1]){   // special case 2: if group 2 is empty/joker is the tail, do the same but with the first joker
             cards = jokers[0]
         }
-        else{
+        else{                                   // all other cases: place group 1 in btwn joker group & group 2, then set beginning of group 2 as start
             // first move the first group in between the space in between the jokers, and the second group
             jokers[1].next = head1
             head1!!.previous = jokers[1]
@@ -159,11 +160,10 @@ class Deck(initialCardOrdering: String) {
             tail1!!.next = head2
             head2!!.previous = tail1
 
-            // then move the second group around to the other side, and since head2 is already linked backwards, just set it as the head node of the full LinkedList
+            // then link the second group around to the other side, and since head2 is already linked backwards, just set it as the new head node of the full LinkedList
             tail2!!.next = jokers[0]
             jokers[0].previous = tail2
 
-            // finally, set the list to start at the old head of group two, which is now the head of group one
             cards = head2
         }
     }
