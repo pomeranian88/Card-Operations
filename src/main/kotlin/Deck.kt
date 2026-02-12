@@ -86,7 +86,12 @@ class Deck(initialCardOrdering: String) {
         var behindJoker: Node? = tempo!!.previous
         var aheadOfJoker: Node? = tempo!!.next       
         var aheadTwoOfJoker: Node? = aheadOfJoker!!.next // now: we have variables for nodes behind, at, ahead of, and two ahead of joker
+        println("the four: ${behindJoker!!.value} ${tempo!!.value} ${aheadOfJoker!!.value} ${aheadTwoOfJoker!!.value}")
 
+        if(aheadOfJoker==cards){cards = tempo}                      // special case: if the joker is moving to front position, set front pos var "cards" = to jokers
+        else if(aheadOfJoker==cards!!.next){cards = aheadOfJoker}   // special case: if the joker is moving to second position, set front pos var "cards" = to spot that is being swapped to
+
+                                                // -- BEGIN SWAPPAGE --
         behindJoker!!.next = aheadOfJoker       // swap links behind & in front of joker to make them consecutive
         aheadOfJoker!!.previous = behindJoker
 
@@ -108,6 +113,9 @@ class Deck(initialCardOrdering: String) {
         val aheadTwoOfJoker: Node? = aheadOfJoker!!.next       // note: this variable is only used as a stepping stone to define three ahead of the joker
         val aheadThreeOfJoker: Node? = aheadTwoOfJoker!!.next  // now: we have variables for nodes behind, at, ahead of, two, and three ahead of the joker
 
+        if(aheadOfJoker==cards){cards = tempo}                      // special case: if the joker is moving to front position, set front pos var "cards" = to jokers
+        else if(aheadOfJoker==cards!!.next){cards = aheadOfJoker}   // special case: if the joker is moving to second position, set front pos var "cards" = to spot that is being swapped to
+
         behindJoker!!.next = aheadOfJoker           // swap links behind & in front of joker to make them consecutive
         aheadOfJoker!!.previous = behindJoker
 
@@ -123,30 +131,40 @@ class Deck(initialCardOrdering: String) {
     fun tripleCut() {
         val jokers: MutableList<Node> = mutableListOf()  // we will store the jokers, and their arrangement, in a mutable list that will be max size 2
         var tempo: Node? = cards
-
         while(jokers.size<2){                            // iterate through the cards, and add the jokers to the mutList when they are reached
             if(tempo!!.value==27){jokers.add(tempo)}
             else if(tempo!!.value==28){jokers.add(tempo)}
-            
             tempo = tempo!!.next
         } // we now have the first joker in jokers[0], and the second joker in jokers[1]
 
+        
+        // ** now, we're assigning the variables for each three part in the triple cut **
         val head1: Node? = cards
         val tail1: Node? = jokers[0].previous
-        val head2: Node? = jokers[1].next
-        val tail2: Node? = cards!!.previous     // now: we have variables of the head and tail of each three secx
+        var head2: Node? = jokers[1].next
+        val tail2: Node? = cards!!.previous
+        // now: we have variables of the head and tail of each three section
 
-        // first move the first group in between the space in between the jokers, and the second group
-        jokers[1].next = head1
-        head1!!.previous = jokers[1]
+        if(cards==jokers[0]){   // special case 1: if group 1 is empty/joker is the head, just set the beginning of group 2 as the head
+            cards = head2
+        }
+        else if(head1!!.previous==jokers[1]){   // special case 2: if group 2 is empty/joker is the tail, do the same but with the first joker
+            cards = jokers[0]
+        }
+        else{
+            // first move the first group in between the space in between the jokers, and the second group
+            jokers[1].next = head1
+            head1!!.previous = jokers[1]
 
-        tail1!!.next = head2
-        head2!!.previous = tail1
+            tail1!!.next = head2
+            head2!!.previous = tail1
 
-        // then move the second group around to the other side, and since head2 is already linked backwards, just set it as the head node of the full LinkedList
-        tail2!!.next = jokers[0]
-        jokers[0].previous = tail2
+            // then move the second group around to the other side, and since head2 is already linked backwards, just set it as the head node of the full LinkedList
+            tail2!!.next = jokers[0]
+            jokers[0].previous = tail2
 
-        cards = head2
+            // finally, set the list to start at the old head of group two, which is now the head of group one
+            cards = head2
+        }
     }
 }
