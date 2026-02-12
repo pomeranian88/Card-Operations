@@ -1,13 +1,3 @@
-/*
- * Author: Zev Thompson
- * 
- * Collab Statement: Worked on all the code & thinking of this by myself. Discussed makeup of Deck.kt briefly with Ian.
- * 
- * Reflection:  The only challenge here was understanding how the LinkedList was set up -- it took a little bit for me
- *              to realize that the LinkedList wasn't stored as any object, but was just a series of loose nodes that 
- *              contained internal info about the next item. Writing on paper helped! Assignment took ~1 hour.
- */
-
 class Deck(initialCardOrdering: String) {
 
     var cards: Node? = null
@@ -90,11 +80,88 @@ class Deck(initialCardOrdering: String) {
     }
 
     fun swapJokerA() {
+        var tempo: Node? = cards
+        while(tempo!!.value!=27){tempo = tempo.next} // iterate through until joker A is reached, and set temp var to it
+
+        var behindJoker: Node? = tempo!!.previous
+        var aheadOfJoker: Node? = tempo!!.next       
+        var aheadTwoOfJoker: Node? = aheadOfJoker!!.next // now: we have variables for nodes behind, at, ahead of, and two ahead of joker
+
+        behindJoker!!.next = aheadOfJoker       // swap links behind & in front of joker to make them consecutive
+        aheadOfJoker!!.previous = behindJoker
+
+        tempo!!.next = aheadTwoOfJoker          // swap links at joker & two in front of joker to make them consecutive
+        aheadTwoOfJoker!!.previous = tempo
+
+        aheadOfJoker!!.next = tempo             // finalize links between joker and the node that used to be one in front, but is now one behind the joker
+        tempo!!.previous = aheadOfJoker
+
+        // i.e. if 0 is joker and configuration used to be {-1, 0, 1, 2}, it is now {-1, 1, 0, 2}
     }
 
     fun swapJokerB() {
+        var tempo: Node? = cards
+        while(tempo!!.value!=28){tempo = tempo.next}       // while temp var keeps iterating upwards until joker B is reached
+
+        val behindJoker: Node? = tempo!!.previous
+        val aheadOfJoker: Node? = tempo!!.next 
+        val aheadTwoOfJoker: Node? = aheadOfJoker!!.next       // note: this variable is only used as a stepping stone to define three ahead of the joker
+        val aheadThreeOfJoker: Node? = aheadTwoOfJoker!!.next  // now: we have variables for nodes behind, at, ahead of, two, and three ahead of the joker
+
+        behindJoker!!.next = aheadOfJoker           // swap links behind & in front of joker to make them consecutive
+        aheadOfJoker!!.previous = behindJoker
+
+        tempo!!.next = aheadThreeOfJoker            // swap links at joker & three in front of joker to make them consecutive
+        aheadThreeOfJoker!!.previous = tempo
+
+        aheadTwoOfJoker!!.next = tempo              // finalize links between joker and the node that used to be two ahead, but is now one behind the joker
+        tempo!!.previous = aheadTwoOfJoker
+
+        // i.e. if 0 is joker and configuration used to be {-1, 0, 1, 2, 3}, it is now {-1, 1, 2, 0, 3}
     }
 
     fun tripleCut() {
+        val jokers: MutableList<Node> = mutableListOf()  // we will store the jokers, and their arrangement, in a mutable list that will be max size 2
+        var tempo: Node? = cards
+
+        while(jokers.size<2){                            // iterate through the cards, and add the jokers to the mutList when they are reached
+            if(tempo!!.value==27){jokers.add(tempo)}
+            else if(tempo!!.value==28){jokers.add(tempo)}
+            
+            tempo = tempo!!.next
+        } // we now have the first joker in jokers[0], and the second joker in jokers[1]
+
+        val head1: Node? = cards
+        val tail1: Node? = jokers[0].previous
+        val head2: Node? = jokers[1].next
+        val tail2: Node? = cards!!.previous     // now: we have variables of the head and tail of each three secx
+
+        // first move the first group in between the space in between the jokers, and the second group
+        jokers[1].next = head1
+        head1!!.previous = jokers[1]
+
+        tail1!!.next = head2
+        head2!!.previous = tail1
+
+        // then move the second group around to the other side, and since head2 is already linked backwards, just set it as the head node of the full LinkedList
+        tail2!!.next = jokers[0]
+        jokers[0].previous = tail2
+
+        cards = head2
     }
 }
+
+
+
+// // going to call node behind joker -1, node of joker 0, node ahead of joker 1, and node ahead of that 2
+        // behindJoker!!.next = aheadOfJoker       // swap -1.next=0 to be -1.next=1
+        // tempo!!.next = aheadOfJoker!!.next      // swap 0.next=1 to be 0.next=2
+        // aheadOfJoker!!.next = tempo             // swap 1.next=2 to be 1.next=0
+        // // now, the order changed from {-1,0,1,2} to {-1,1,0,2}. 0, the joker, has been moved one up
+
+// // going to call node behind joker -1, node of joker 0, node ahead of joker 1, node ahead of that 2, and node ahead of that 3
+        // behindJoker!!.next = aheadOfJoker         // swap -1.next=0 to be -1.next = 1
+        // aheadOfJoker!!.next = aheadAheadOfJoker   // swap 1.next=2 to be 1.next = 2
+        // tempo!!.next = aheadAheadOfJoker!!.next   // swap 0.next=1 to be 0.next = 3
+        // aheadAheadOfJoker!!.next = tempo          // swap 2.next=3 to be 2.next = 0
+        // // now, the order changed from {-1,0,1,2,3} to {-1,1,2,0,3}. 0, the joker, has been moved two up
